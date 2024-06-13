@@ -143,7 +143,7 @@ export default function Home() {
         <p className="text-lg">{message}</p>
         <h2 className="text-2xl font-semibold">API Healthcheck:</h2>
         <p className="text-lg">{status}</p>
-        <h2 className="text-2xl font-semibold">Apple's Latest Price:</h2>
+        <h2 className="text-2xl font-semibold">Apple Latest Price:</h2>
         <p className="text-lg">{price}</p>
       </div>
     </main>
