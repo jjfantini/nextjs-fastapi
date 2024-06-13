@@ -7,7 +7,10 @@ import Link from "next/link";
 export default function Home() {
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState("");
-  const [price, setApplePrice] = useState(0);
+  const [price, setPrice] = useState(0);
+  const [ticker, setTicker] = useState("AAPL");
+  const tickers = ["AAPL", "GOOGL", "MSFT"];
+  const [tickerIndex, setTickerIndex] = useState(0);
 
   useEffect(() => {
     // Fetch data from the FastAPI endpoint
@@ -21,14 +24,21 @@ export default function Home() {
       .then((data) => setStatus(data.status))
       .catch((error) => console.error("Error fetching status:", error));
 
-    fetch("/api/apple_stock")
+    fetch(`/api/stock_price?ticker=${ticker}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log("Apple stock data:", data);
-        setApplePrice(data.price);
+        console.log(`${ticker} stock data:`, data);
+        setPrice(data.price);
       })
-      .catch((error) => console.error("Error fetching Apple stock data:", error));
-  }, []);
+      .catch((error) => console.error(`Error fetching ${ticker} stock data:`, error));
+  }, [ticker]);
+
+  const cycleTicker = () => {
+    const nextIndex = (tickerIndex + 1) % tickers.length;
+    setTickerIndex(nextIndex);
+    setTicker(tickers[nextIndex]);
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
@@ -143,8 +153,11 @@ export default function Home() {
         <p className="text-lg">{message}</p>
         <h2 className="text-2xl font-semibold">API Healthcheck:</h2>
         <p className="text-lg">{status}</p>
-        <h2 className="text-2xl font-semibold">Apple Latest Price:</h2>
+        <h2 className="text-2xl font-semibold">{ticker} Latest Price:</h2>
         <p className="text-lg">{price}</p>
+        <button onClick={cycleTicker} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+          Cycle Ticker
+        </button>
       </div>
     </main>
   );

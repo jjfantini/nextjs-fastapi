@@ -11,10 +11,10 @@ def hello_world():
 def healthcheck():
     return {"status": "Check, Check, 1..2...!"}
 
-@app.get("/api/apple_stock")
-def get_apple_stock():
-    apple = yf.Ticker("AAPL")
-    hist = apple.history(period="1d")
+@app.get("/api/stock_price")
+def get_stock_price(ticker: str):
+    stock = yf.Ticker(ticker)
+    hist = stock.history(period="1d")
     latest_price = hist['Close'].iloc[-1]
     rounded_price = round(latest_price, 2)
-    return {"price": rounded_price}
+    return {"ticker": ticker, "price": rounded_price}
