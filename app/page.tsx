@@ -7,6 +7,7 @@ import Link from "next/link";
 export default function Home() {
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState("");
+  const [price, setApplePrice] = useState(0);
 
   useEffect(() => {
     // Fetch data from the FastAPI endpoint
@@ -19,8 +20,15 @@ export default function Home() {
       .then((response) => response.json())
       .then((data) => setStatus(data.status))
       .catch((error) => console.error("Error fetching status:", error));
-  }, []);
 
+    fetch("/api/apple_stock")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Apple stock data:", data);
+        setApplePrice(data.price);
+      })
+      .catch((error) => console.error("Error fetching Apple stock data:", error));
+  }, []);
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
@@ -135,6 +143,8 @@ export default function Home() {
         <p className="text-lg">{message}</p>
         <h2 className="text-2xl font-semibold">API Healthcheck:</h2>
         <p className="text-lg">{status}</p>
+        <h2 className="text-2xl font-semibold">Apple's Latest Price:</h2>
+        <p className="text-lg">{price}</p>
       </div>
     </main>
   );
