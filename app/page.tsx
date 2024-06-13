@@ -1,7 +1,26 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
+  const [message, setMessage] = useState("");
+  const [status, setStatus] = useState("");
+
+  useEffect(() => {
+    // Fetch data from the FastAPI endpoint
+    fetch("/api/python")
+      .then((response) => response.json())
+      .then((data) => setMessage(data.message))
+      .catch((error) => console.error("Error fetching message:", error));
+
+    fetch("/api/healthcheck")
+      .then((response) => response.json())
+      .then((data) => setStatus(data.status))
+      .catch((error) => console.error("Error fetching status:", error));
+  }, []);
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
@@ -110,6 +129,12 @@ export default function Home() {
             Instantly deploy your Next.js site to a shareable URL with Vercel.
           </p>
         </a>
+      </div>
+      <div className="mt-8 text-center">
+        <h2 className="text-2xl font-semibold">API Response:</h2>
+        <p className="text-lg">{message}</p>
+        <h2 className="text-2xl font-semibold">API Healthcheck:</h2>
+        <p className="text-lg">{status}</p>
       </div>
     </main>
   );
